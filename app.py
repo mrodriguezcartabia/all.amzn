@@ -79,6 +79,8 @@ texts = {
         "msg_error_api": "Sin conexión con API Alpha Vantage",
         "msg_manual_price": "Por favor, coloque el precio manualmente para continuar.",
         "error_fred": "Sin conexión con FRED",
+        "parar_precio": "Error al conectar con Alpha vetage. Por favor, introduzca el precio manualmente:",
+        "parar_tasa": "Error al conectar con FRED. Por favor, introduzca la tasa manualmente:"
     },
     "pt": {
         "title": "Valiador de Call de Ouro",
@@ -154,10 +156,37 @@ def get_market_data_alpha():
             with open(cache_file, "w") as f:
                 f.write(str(precio_amzn))
             return precio_amzn
-        return None
-    except Exception as e:
-        st.error(f"Error: {e}")
-        return None #ojoooooooooooooooooo
+    except:
+        pass
+    return parar_juego(t["parar_precio"])
+
+def get_fred_risk_free_rate():
+    cache_file = "risk_free.txt"
+
+    # Leamos el archivo
+    if os.path.exists(cache_file):
+        file_age = time.time() - os.path.getmtime(cache_file)
+        if file_age < 10800:
+            try:
+                with open(cache_file, "r") as f:
+                    cached_file = float(f.read())
+                return cached_file
+            except:
+                pass
+    # Buscamos en internet
+    try:
+        api_key = st.secrets["FRED_API_KEY"]
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"}
+        response = requests.get(f"https://api.stlouisfed.org/fred/series/observations?series_id=DTB4WK&api_key={api_key}&file_type=json&sort_order=desc&limit=5", headers=headers)
+        data = response.json()
+        # Buscamos el primer valor útil (por si es feriado)
+        for obs in data['observations']:
+            val =obs['value']
+            if val != ".":
+                return float(val) / 100
+    except:
+        pass
+    return parar_juego(t["parar_tasa"])
 
 def obtener_volatilidad():
 
@@ -176,7 +205,26 @@ def hallar_sigma_optimo(precios_mercado, strikes, S, r, T, beta, paso, param_a):
     res = minimize_scalar(error_cuadratico, bounds=(0.01, 2.0), method='bounded')
     return res.x 
 
-# --- MOTOR DE CÁLCULO ---
+def parar_juego(cartel):
+    _, center_col, _ = st.columns([1, 2, 1])
+    with center_col:
+        st.markdown(f"""
+            <div class="overlay-card-static">
+                <h2 style="color: #DAA520; text-align: center;">{t['title']}</h2>
+                <p style="color: white; text-align: center;">{cartel}</p>
+            </div>
+        """, unsafe_allow_html=True)
+      
+        valor_inicial = st.number_input(t["val_act"], value=None, placeholder="")        
+        if st.button("ENTER", key="btn_start_manual", use_container_width=True, type="primary") or st.number.input(on_change):
+            if valor_inicial is not None and  valor_inicial > 0:
+                return valor_inicial
+                st.rerun()
+            else:
+                st.warning(t["msg_manual_price"])
+    
+    st.stop()
+
 @st.cache_data
 def calcular_call(S, K, r, T, sigma, beta, paso, param_a):
     m = int(round(T / paso))
@@ -200,13 +248,13 @@ def calcular_call(S, K, r, T, sigma, beta, paso, param_a):
 if 'tiempo_total' not in st.session_state:
   st.session_state.tiempo_total = 1
 if 'valor_amzn' not in st.session_state:
-  st.session_state.valor_amzn = get_market_data_alpha()
+  st.session_state.precio_AMZN = get_market_data_alpha()
 if 'paso_val' not in st.session_state:
   st.session_state.paso_val = 0.1
-if 'market_cache' not in st.session_state:
-  st.session_state.market_cache = None
+#if 'market_cache' not in st.session_state:
+#  st.session_state.market_cache = None
 if 'tasa_cache' not in st.session_state:
-  st.session_state.tasa_cache = get_fred_risk_free_rate() #cuidado
+  st.session_state.tasa_cache = get_fred_risk_free_rate() 
 if 'data_grafico' not in st.session_state:
   st.session_state.data_grafico = None
 if 'mostrar_editor' not in st.session_state:
@@ -217,7 +265,43 @@ if 'precios_mercado' not in st.session_state:
   st.session_state.precios_mercado = [0.0] * 7
 
 # --- INTERFAZ ---
+tiempo_T = dias /365
+strike = round(precio_AMZN / 5) * 5
 
+col1, col2, col3 = st.columns(3)
+with col1:
+    param_a_def = 1.0
+    param_a = st.number_input(t["alpha_lbl"], value=param_a_def, step=0.01, min_value=0.1, max_value=10.0)
+    sigma_def = 0.16
+    sigma = st.number_input(t["sigma_lbl"], value=sigma_def, format="%.2f", min_value=0.1, max_value=2.0)
 
+with col2:
+    beta = st.number_input("Beta", value=0.5, step=0.01, min_value=0.0, max_value=10.0)
+    tasa_r = st.number_input(t["tasa_lbl"], value=st.session_state.tasa_cache, format="%.4f", min_value=0.0, max_value=10.0)
+    st.caption(f"{t['fuente_tasa']} = {st.session_state.tasa_cache}")
 
+with col3:
+    dias = st.number_input(t["dias"], value=1, step=1.0, min_value=1.0, max_value=365.0)
+    precio_AMZN = st.number_input(t["precio"], value=st.session_state.precio_AMZN, step=0.01, min_value=1.0)
+    st.caption(f"{t['fuente_precio']} = {st.session_state.precio_AMZN}")
+
+herramientas, grafico = st.columns([1, 3])
+with herramientas:
+    st.markdown(f"""
+        <div class="custom-metric-container">
+            <span class="metric-label">{t["paso_temp"]}:</span>
+            <span class="metric-value-small">{st.session_state.paso_val:.8f}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Botones de paso temporal
+    boton1, boton2 = st.columns([1, 1.5])
+    with boton1:
+        if st.button("x10⁻¹"):
+            st.session_state.paso_val *= 0.1
+            st.rerun()
+    with boton2:
+        if st.button(t["reset"], key="btn-reset"):
+            st.session_state.paso_val = VALOR_PASO_ORIGINAL
+            st.rerun()
 
