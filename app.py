@@ -504,3 +504,8 @@ with grafico:
     ax.set_ylabel(t["graph_y"])
     ax.grid(True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
+
+    
+    # Eliminar bordes innecesarios
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
