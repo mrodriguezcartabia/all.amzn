@@ -11,9 +11,6 @@ from datetime import datetime
 from scipy.special import comb
 from scipy.optimize import minimize_scalar
 
-# --- CONFIGURACIÓN DE PÁGINA ---
-st.set_page_config(page_title=t["title"], layout="wide")
-
 # --- LÓGICA DE IDIOMA ---
 params = st.query_params
 idioma = params.get("lang", "en") # Por defecto inglés
@@ -126,6 +123,9 @@ texts = {
 }
 
 t = texts.get(idioma, texts["en"])
+
+# --- CONFIGURACIÓN DE PÁGINA ---
+st.set_page_config(page_title=t["title"], layout="wide")
 
 # FUNCIONES
 def local_css(file_name):
