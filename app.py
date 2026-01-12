@@ -432,37 +432,37 @@ with herramientas:
                 # Solo aquí guardamos los datos en el estado global
                 st.session_state.precios_mercado = edited_df[t["precio_mercado"]].tolist()
                 st.rerun() # Esto refresca el gráfico con los nuevos puntos
-        # Ahora optimizamos
-        # Solo si hay una variable seleccionada
-        if st.session_state.variable_optimizada:
-            var_activa = st.session_state.variable_optimizada
-            
-            # Supongamos que guardas los resultados en st.session_state.res_actual
-            if 'res_actual' not in st.session_state:
-                st.session_state.res_actual = 0.0
+    # Ahora optimizamos
+    # Solo si hay una variable seleccionada
+    if st.session_state.variable_optimizada:
+        var_activa = st.session_state.variable_optimizada
         
-            st.metric(
-                label=f"Valor ajustado de {var_activa.upper()}", 
-                value=f"{st.session_state.res_actual:.5f}"
-            )
-        st.info(t["seleccionar"])
-        b1, b2, b3, b4 = st.columns(4)
-        with b1:
-            if st.button("Alpha", use_container_width=True):
-                st.session_state.variable_optimizada = "Alpha"
-        with b2:
-            if st.button("Beta", use_container_width=True):
-                st.session_state.variable_optimizada = "Beta"
-        with b3:
-            if st.button("Sigma", use_container_width=True):
-                st.session_state.variable_optimizada = "Sigma"
-        with b4:
-            if st.button(t["tasa_lbl"], use_container_width=True):
-                st.session_state.variable_optimizada = t["tasa_lbl"]
-        # Botón para optimizar
-        if st.button(t["lbl_hallar"], type="primary", use_container_width=True) and any(p > 0 for p in st.session_state.precios_mercado) and st.session_state.variable_optimizada is not None:
-            st.session_state.resultado_opt = optimizar_parametro(st.session_state.variable_optimizada, st.session_state.precios_mercado, rango_strikes, precio_accion, tasa_r, tiempo_T, sigma, beta, st.session_state.paso_val, param_a)
-            st.rerun()
+        # Supongamos que guardas los resultados en st.session_state.res_actual
+        if 'res_actual' not in st.session_state:
+            st.session_state.res_actual = 0.0
+    
+        st.metric(
+            label=f"Valor ajustado de {var_activa.upper()}", 
+            value=f"{st.session_state.res_actual:.5f}"
+        )
+    st.info(t["seleccionar"])
+    b1, b2, b3, b4 = st.columns(4)
+    with b1:
+        if st.button("Alpha", use_container_width=True):
+            st.session_state.variable_optimizada = "Alpha"
+    with b2:
+        if st.button("Beta", use_container_width=True):
+            st.session_state.variable_optimizada = "Beta"
+    with b3:
+        if st.button("Sigma", use_container_width=True):
+            st.session_state.variable_optimizada = "Sigma"
+    with b4:
+        if st.button(t["tasa_lbl"], use_container_width=True):
+            st.session_state.variable_optimizada = t["tasa_lbl"]
+    # Botón para optimizar
+    if st.button(t["lbl_hallar"], type="primary", use_container_width=True) and any(p > 0 for p in st.session_state.precios_mercado) and st.session_state.variable_optimizada is not None:
+        st.session_state.resultado_opt = optimizar_parametro(st.session_state.variable_optimizada, st.session_state.precios_mercado, rango_strikes, precio_accion, tasa_r, tiempo_T, sigma, beta, st.session_state.paso_val, param_a)
+        st.rerun()
 
     # Resultado del hallado
     #valor_hallado = f"{st.session_state.sigma_hallado:.5f}" if st.session_state.sigma_hallado else ""
