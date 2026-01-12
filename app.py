@@ -343,8 +343,6 @@ if 'mostrar_editor' not in st.session_state:
   st.session_state.mostrar_editor = False
 if 'sigma_hallado' not in st.session_state:
   st.session_state.sigma_hallado = get_volatility_data_alpha()
-if 'precios_mercado' not in st.session_state:
-  st.session_state.precios_mercado = [0.0] * 7
 # Ahora iniciamos todas las variables que necesitamos para optimizar
 if 'variable_optimizada' not in st.session_state:
     st.session_state.variable_optimizada = None
@@ -379,8 +377,11 @@ with col3:
 # Variables
 st.divider()
 tiempo_T = dias / 365
-strike = round(precio_accion / 5) * 5
-rango_strikes = np.arange(strike - 15, strike + 16, 5)
+# Introducimos los Strikes
+strike = round(precio_accion / 2.5) * 2.5
+rango_strikes = np.arange(strike - 7.5, strike + 8, 2.5)
+if 'precios_mercado' not in st.session_state:
+  st.session_state.precios_mercado = [0.0] * len(strikes)
 
 herramientas, grafico = st.columns([1, 3])
 with herramientas:
