@@ -381,7 +381,7 @@ with grafico:
     
     # Curva del Modelo
     ax.plot(strikes, calls, marker='o', color='#FF9900', linewidth=2)
-    ax.fill_between(strikes, calls, alpha=0.05, color='#FF9900', label='Call')
+    ax.fill_between(strikes, calls, alpha=0.08, color='#FF9900', label='Call')
 
     ax.set_xlabel("Strike")
     ax.set_ylabel(t["graph_y"])
