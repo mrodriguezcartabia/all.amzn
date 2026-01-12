@@ -389,12 +389,12 @@ with herramientas:
             <span class="metric-value-small">{st.session_state.paso_val:.8f}</span>
         </div>
     """, unsafe_allow_html=True)
-    st.text_input(label=t["paso_temp"], disabled=True)
+    st.text_input(label=t["paso_temp"], value=f"{st.session_state.paso_val:.6f}", disabled=True)
 
     # Botones de paso temporal
     boton1, boton2 = st.columns([1, 1.5])
     with boton1:
-        if st.button("x10⁻¹"):
+        if st.button("x10⁻¹") and st.session_state.paso_val > 10^(-5):
             st.session_state.paso_val *= 0.1
             st.rerun()
     with boton2:
