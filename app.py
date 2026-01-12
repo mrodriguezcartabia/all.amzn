@@ -454,7 +454,7 @@ with herramientas:
             if st.button("Beta", use_container_width=True):
                 st.session_state.variable_optimizada = "Beta"
         with b3:
-            if st.button("Sigma", use_container_wdith=True):
+            if st.button("Sigma", use_container_width=True):
                 st.session_state.variable_optimizada = "Sigma"
         with b4:
             if st.button(t["tasa_lbl"], use_container_width=True):
