@@ -377,6 +377,7 @@ with col3:
     st.caption(f"{t['fuente_precio']} = {st.session_state.precio_AMZN}")
 
 # Variables
+st.divider()
 tiempo_T = dias / 365
 strike = round(precio_accion / 5) * 5
 rango_strikes = np.arange(strike - 15, strike + 16, 5)
