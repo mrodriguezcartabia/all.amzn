@@ -274,6 +274,7 @@ def parar_juego(cartel):
                     st.warning(t["msg_manual_price"])
         st.stop()
 
+# Funciones del cálculo central
 @st.cache_data
 def calcular_call(S, K, r, T, sigma, beta, paso, param_a):
     m = int(round(T / paso))
@@ -291,6 +292,34 @@ def calcular_call(S, K, r, T, sigma, beta, paso, param_a):
         payoff = max(st_k - K, 0)
         suma_binomial += prob * payoff
     return np.exp(-r * T) * suma_binomial
+
+def optimizar_parametro(target_param, precios_mercado, strikes, S, r, T, sigma, beta, paso, param_a):
+    def error_cuadratico(valor_test):
+        if valor_test <= 0: return 1e10
+        err = 0
+        # Asignamos el valor de prueba al parámetro elegido
+        p = {
+            "sigma": valor_test if target_param == "sigma" else sigma,
+            "beta": valor_test if target_param == "beta" else beta,
+            "alpha": valor_test if target_param == "alpha" else param_a,
+            "tasa": valor_test if target_param == "tasa" else r
+        }
+        
+        for i in range(len(strikes)):
+            c_mod = calcular_call(S, strikes[i], p["tasa"], T, p["sigma"], p["beta"], paso, p["alpha"])
+            err += (c_mod - precios_mercado[i])**2
+        return err
+
+    # Definimos rangos lógicos según el parámetro
+    bounds = {
+        "sigma": (0.01, 3.0),
+        "beta": (0.01, 10.0),
+        "alpha": (0.1, 5.0),
+        "tasa": (0.0, 2.0)
+    }
+    
+    res = minimize_scalar(error_cuadratico, bounds=bounds[target_param], method='bounded')
+    return res.x
 
 # --- ESTADO DE SESIÓN ---
 valor_paso_original = 0.1
@@ -313,11 +342,19 @@ if 'sigma_hallado' not in st.session_state:
   st.session_state.sigma_hallado = get_volatility_data_alpha()
 if 'precios_mercado' not in st.session_state:
   st.session_state.precios_mercado = [0.0] * 7
+# Ahora iniciamos todas las variables que necesitamos para optimizar
+if 'variable_optimizada' not in st.session_state:
+    st.session_state.variable_optimizada = None
+if 'sigma_opt' not in st.session_state:
+    st.session_state.sigma_opt = 0.0
+if 'beta_opt' not in st.session_state:
+    st.session_state.beta_opt = 0.0
+if 'alpha_opt' not in st.session_state:
+    st.session_state.alpha_opt = 0.0
+if 'tasa_opt' not in st.session_state:
+    st.session_state.tasa_opt = 0.0
 
 # --- INTERFAZ ---
-tiempo_T = dias /365
-strike = round(precio_accion / 5) * 5
-rango_strikes = np.arange(strike - 15, strike + 16, 5)
 col1, col2, col3 = st.columns(3)
 with col1:
     param_a = st.number_input(t["alpha_lbl"], value=1.0, step=0.01, min_value=0.1, max_value=10.0)
@@ -333,6 +370,11 @@ with col3:
     dias = st.number_input(t["dias"], value=1.0, step=1.0, min_value=1.0, max_value=365.0)
     precio_accion = st.number_input(t["val_act"], value=float(st.session_state.precio_AMZN), step=0.01, min_value=1.0)
     st.caption(f"{t['fuente_precio']} = {st.session_state.precio_AMZN}")
+
+# Variables
+tiempo_T = dias /365
+strike = round(precio_accion / 5) * 5
+rango_strikes = np.arange(strike - 15, strike + 16, 5)
 
 herramientas, grafico = st.columns([1, 3])
 with herramientas:
@@ -363,8 +405,8 @@ with herramientas:
         
         # Creamos un formulario interno
         with st.form("form_mercado"):
-            if len(st.session_state.precios_mercado) != len(rango_edicion):
-                st.session_state.precios_mercado = [0.0] * len(rango_edicion)                
+            if len(st.session_state.precios_mercado) != len(rango_strikes):
+                st.session_state.precios_mercado = [0.0] * len(rango_strikes)                
             df_editor = pd.DataFrame({
                 "Strike": rango_strikes, 
                 t["precio_mercado"]: st.session_state.precios_mercado
@@ -386,7 +428,43 @@ with herramientas:
             if submit_save:
                 # Solo aquí guardamos los datos en el estado global
                 st.session_state.precios_mercado = edited_df[t["precio_mercado"]].tolist()
-                st.rerun() # Esto refresca el gráfico con los nuevos puntos 
+                st.rerun() # Esto refresca el gráfico con los nuevos puntos
+        # Ahora optimizamos
+        # Solo si hay una variable seleccionada
+        if st.session_state.variable_optimizada:
+            var_activa = st.session_state.variable_optimizada
+            
+            # Supongamos que guardas los resultados en st.session_state.res_actual
+            if 'res_actual' not in st.session_state:
+                st.session_state.res_actual = 0.0
+        
+            st.metric(
+                label=f"Valor ajustado de {var_activa.upper()}", 
+                value=f"{st.session_state.res_actual:.5f}"
+            )
+        st.info(t["seleccionar"])
+        b1, b2, b3, b4 = st.columns(4)
+        with b1:
+            if st.button("Alpha", use_container_width=True):
+                st.session_state.variable_optimizada = "Alpha"
+        with b2:
+            if st.button("Beta", use_container_width=True):
+                st.session_state.variable_optimizada = "Beta"
+        with b3:
+            if st.button("Sigma", use_container_wdith=True):
+                st.session_state.variable_optimizada = "Sigma"
+        with b4:
+            if st.button(t["tasa_lbl"], use_container_width=True):
+                st.session_state.variable_optimizada = t["tasa_lbl"]
+        # Botón para optimizar
+        if st.button(t["lbl_hallar"], type="primary", use_container_width=True) and any(p > 0 for p in st.session_state.precios_mercado) and st.session_state.variable_optimizada is not None:
+            st.session_state.resultado_opt = optimizar_parametro(st.session_state.variable_optimizada, st.session_state.precios_mercado, rango_strikes, precio_accion, tasa_r, tiempo_T, sigma, beta, st.session_state.paso_val, param_a)
+            st.rerun()
+
+    # Resultado del hallado
+    #valor_hallado = f"{st.session_state.sigma_hallado:.5f}" if st.session_state.sigma_hallado else ""
+    #st.metric(label=f"{t["lbl_res"]} {var_activa.upper()}", value=st.session_state.resultado_opt)
+
 
 # Calculamos los valores del call
 if st.session_state.data_grafico is None or btn_recalcular:
@@ -414,8 +492,12 @@ with grafico:
     ax.plot(strikes, calls, marker='o', color='#FF9900', linewidth=2)
     ax.fill_between(strikes, calls, alpha=0.08, color='#FF9900', label='Call')
 
+    # Curva de Mercado   - Solo si el usuario ingresó algún valor > 0
+    if any(p > 0 for p in st.session_state.precios_mercado):
+        ax.plot(strikes, st.session_state.precios_mercado, marker='o', color='#000000', linewidth=2)
+        ax.fill_between(strikes, st.session_state.precios_mercado, alpha=0.1, color='#000000', label=t['precio_mercado'])
+        
     ax.set_xlabel("Strike")
     ax.set_ylabel(t["graph_y"])
     ax.grid(True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
-
