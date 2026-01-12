@@ -50,7 +50,8 @@ texts = {
         "parar_precio": "Error connecting to Alpha Vantage. Please enter the price manually:",
         "parar_tasa": "Error connecting to FRED. Please enter the rate manually:",
         "parar_sigma": "Error connecting to Alpha Vantage. Please enter the volatility manually:",
-        "dias": "Days",        
+        "dias": "Days",
+        "seleccionar": "Select",
     },
     "es": {
         "title": "Valuador de Call de Oro",
@@ -86,6 +87,7 @@ texts = {
         "parar_tasa": "Error al conectar con FRED. Por favor, introduzca la tasa manualmente:",
         "parar_sigma": "Error al conectar con Alpha vetage. Por favor, introduzca la volatilidad anual manualmente:",
         "dias": "Días",
+        "seleccionar": "Selecccionar",
     },
     "pt": {
         "title": "Valiador de Call de Ouro",
@@ -122,6 +124,7 @@ texts = {
         "parar_tasa": "Erro ao conectar com a FRED. Por favor, insira a taxa manualmente:",
         "parar_sigma": "Erro ao conectar com a Alpha Vantage. Por favor, insira a volatilidade anual manualmente:",
         "dias": "Dias",
+        "seleccionar": "Selecionar",
     }
 }
 
