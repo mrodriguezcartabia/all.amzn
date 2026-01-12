@@ -324,7 +324,7 @@ with col1:
 with col2:
     beta = st.number_input("Beta", value=0.5, step=0.01, min_value=0.0, max_value=10.0)
     tasa_r = st.number_input(t["tasa_lbl"], value=float(st.session_state.tasa_cache), format="%.4f", min_value=0.0, max_value=10.0)
-    st.caption(f"{t['fuente_tasa']} = {st.session_state.tasa_cache}")
+    st.caption(f"{t['fuente_tasa']} = {st.session_state.tasa_cache:.4f}")
 
 with col3:
     dias = st.number_input(t["dias"], value=1.0, step=1.0, min_value=1.0, max_value=365.0)
