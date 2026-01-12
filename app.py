@@ -383,7 +383,7 @@ rango_strikes = np.arange(strike - 15, strike + 16, 5)
 
 herramientas, grafico = st.columns([1, 3])
 with herramientas:
-    st.number_input(label=t["paso_temp"], value=float(st.session_state.paso_val), format="%.6f", read_only=True)
+    st.number_input(label=t["paso_temp"], value=float(st.session_state.paso_val), format="%.6f")
 
     # Botones de paso temporal
     boton1, boton2 = st.columns([1, 1.5])
