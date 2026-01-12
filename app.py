@@ -458,16 +458,24 @@ with herramientas:
     b1, b2, b3, b4 = st.columns(4)
     with b1:
         if st.button("Alpha", use_container_width=True):
-            st.session_state.variable_optimizada = "Alpha"
+            if st.session_state.variable_optimizada != "Alpha":
+                st.session_state.variable_optimizada = "Alpha"
+                st.session_state.resultado_opt = None
     with b2:
         if st.button("Beta", use_container_width=True):
-            st.session_state.variable_optimizada = "Beta"
+            if st.session_state.variable_optimizada != "Beta":
+                st.session_state.variable_optimizada = "Beta"
+                st.session_state.resultado_opt = None
     with b3:
         if st.button("Sigma", use_container_width=True):
-            st.session_state.variable_optimizada = "Sigma"
+            if st.session_state.variable_optimizada != "Sigma":
+                st.session_state.variable_optimizada = "Sigma"
+                st.session_state.resultado_opt = None
     with b4:
         if st.button(t["tasa_lbl"], use_container_width=True):
-            st.session_state.variable_optimizada = t["tasa_lbl"]
+            if st.session_state.variable_optimizada != t["tasa_lbl"]:
+                st.session_state.variable_optimizada = t["tasa_lbl"]
+                st.session_state.resultado_opt = None
     # Botón para optimizar
     if st.button(t["lbl_hallar"], type="primary", use_container_width=True) and any(p > 0 for p in st.session_state.precios_mercado) and st.session_state.variable_optimizada:
         st.session_state.resultado_opt = optimizar_parametro(st.session_state.variable_optimizada, st.session_state.precios_mercado, rango_strikes, precio_accion, tasa_r, 
