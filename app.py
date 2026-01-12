@@ -315,6 +315,9 @@ if 'precios_mercado' not in st.session_state:
   st.session_state.precios_mercado = [0.0] * 7
 
 # --- INTERFAZ ---
+tiempo_T = dias /365
+strike = round(precio_accion / 5) * 5
+rango_strikes = np.arange(strike - 15, strike + 16, 5)
 col1, col2, col3 = st.columns(3)
 with col1:
     param_a = st.number_input(t["alpha_lbl"], value=1.0, step=0.01, min_value=0.1, max_value=10.0)
@@ -354,10 +357,38 @@ with herramientas:
     # Botón para el cálculo      
     btn_recalcular = st.button(t["recalc"], type="primary", use_container_width=True)
 
-# Calculamos
-tiempo_T = dias /365
-strike = round(precio_accion / 5) * 5
-rango_strikes = np.arange(strike - 15, strike + 16, 5)
+    # Creamos el entorno para el ingreso de datos
+    with st.popover(t["lbl_ingresar"], use_container_width=True):
+        st.write(t["lbl_mkt_info"])
+        
+        # Creamos un formulario interno
+        with st.form("form_mercado"):
+            if len(st.session_state.precios_mercado) != len(rango_edicion):
+                st.session_state.precios_mercado = [0.0] * len(rango_edicion)                
+            df_editor = pd.DataFrame({
+                "Strike": rango_strikes, 
+                t["precio_mercado"]: st.session_state.precios_mercado
+            })
+            
+            # El editor dentro del formulario no dispara re-ejecuciones automáticas
+            edited_df = st.data_editor(
+                df_editor, 
+                hide_index=True, 
+                use_container_width=True,
+                num_rows="fixed",
+                column_config={"Strike": st.column_config.NumberColumn(disabled=True),
+                t["precio_mercado"]: st.column_config.NumberColumn(min_value=0.0)}
+            )
+            
+            # 2. Botón para confirmar los cambios
+            submit_save = st.form_submit_button(t["lbl_guardar"], use_container_width=True)
+            
+            if submit_save:
+                # Solo aquí guardamos los datos en el estado global
+                st.session_state.precios_mercado = edited_df[t["precio_mercado"]].tolist()
+                st.rerun() # Esto refresca el gráfico con los nuevos puntos 
+
+# Calculamos los valores del call
 if st.session_state.data_grafico is None or btn_recalcular:
     # Indicador de carga activo durante el proceso matemático
     with st.spinner(t['msg_loading']):
