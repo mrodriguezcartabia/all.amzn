@@ -363,8 +363,8 @@ if 'tasa_opt' not in st.session_state:
 col1, col2, col3 = st.columns(3)
 with col1:
     param_a = st.number_input(t["alpha_lbl"], value=1.0, step=0.01, min_value=0.1, max_value=10.0)
-    sigma = st.number_input(t["sigma_lbl"], value=float(st.session_state.sigma_hallado), format="%.2f", min_value=0.001, max_value=3.0)
-    st.caption(f"{t['fuente_precio']} = {st.session_state.sigma_hallado}")
+    sigma = st.number_input(t["sigma_lbl"], value=float(st.session_state.sigma_hallado), format="%.4f", min_value=0.001, max_value=3.0)
+    st.caption(f"{t['fuente_precio']} = {st.session_state.sigma_hallado:.4f}")
 
 with col2:
     beta = st.number_input("Beta", value=0.5, step=0.01, min_value=0.0, max_value=10.0)
@@ -391,13 +391,13 @@ with herramientas:
             border: 1px solid rgba(255, 255, 255, 0.2);
             margin-bottom: 10px;">
             <div style="
-                color: #cbd5e0; 
+                color: #fafafa; 
                 font-size: 0.8rem; 
                 margin-bottom: 4px;">
                 {t["paso_temp"]}
             </div>
             <div style="
-                color: #B8860B; 
+                color: #fafafa; 
                 font-size: 1.2rem; 
                 font-weight: 500;
                 font-family: monospace;">
