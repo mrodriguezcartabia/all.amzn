@@ -39,7 +39,7 @@ texts = {
         "info_init": "Click RECALCULATE to generate the visualization.",
         "lbl_ingresar": "Enter market data",
         "lbl_guardar": "Save",
-        "lbl_hallar": "Find sigma",
+        "lbl_hallar": "Find variable",
         "lbl_res": "Sigma found",
         "lbl_mkt_info": "Enter market prices for each Strike:",
         "precio_mercado": "Price market",
@@ -76,7 +76,7 @@ texts = {
         "info_init": "Presiona RECALCULAR para generar la visualización.",
         "lbl_ingresar": "Ingresar datos de mercado",
         "lbl_guardar": "Guardar",
-        "lbl_hallar": "Hallar sigma",
+        "lbl_hallar": "Hallar variable",
         "lbl_res": "Sigma hallado",
         "lbl_mkt_info": "Introduce los precios de mercado para cada Strike:",
         "precio_mercado": "Valor de mercado",
@@ -112,7 +112,7 @@ texts = {
         "info_init": "Clique em RECALCULAR para gerar a visualização.",
         "lbl_ingresar": "Insira os dados de mercado",
         "lbl_guardar": "Salvar",
-        "lbl_hallar": "Encontre sigma",
+        "lbl_hallar": "Encontre variável",
         "lbl_res": "Sigma encontrado",
         "lbl_mkt_info": "Insira os preços de mercado para cada Strike:",
         "precio_mercado": "Mercado de preços",
@@ -305,7 +305,7 @@ def optimizar_parametro(target_param, precios_mercado, strikes, S, r, T, sigma, 
             "sigma": valor_test if target_param == "Sigma" else sigma,
             "beta": valor_test if target_param == "Beta" else beta,
             "alpha": valor_test if target_param == "Alpha" else param_a,
-            "tasa": valor_test if target_param == "Tasa" else r
+            "tasa": valor_test if target_param == t["tasa_lbl"] else r
         }
         
         for i in range(len(strikes)):
@@ -318,7 +318,7 @@ def optimizar_parametro(target_param, precios_mercado, strikes, S, r, T, sigma, 
         "Sigma": (0.01, 3.0),
         "Beta": (0.01, 10.0),
         "Alpha": (0.1, 5.0),
-        "Tasa": (0.0, 2.0)
+        t["tasa_lbl"]: (0.0, 2.0)
     }
     
     res = minimize_scalar(error_cuadratico, bounds=bounds[target_param], method='bounded')
@@ -435,14 +435,6 @@ with herramientas:
                 st.session_state.precios_mercado = edited_df[t["precio_mercado"]].tolist()
                 st.rerun() # Esto refresca el gráfico con los nuevos puntos
     # Ahora optimizamos
-    # Solo si hay una variable seleccionada
-    if st.session_state.variable_optimizada:
-        var_activa = st.session_state.variable_optimizada
-        
-        # Supongamos que guardas los resultados en st.session_state.res_actual
-        if 'res_actual' not in st.session_state:
-            st.session_state.res_actual = 0.0
-    
     b1, b2, b3, b4 = st.columns(4)
     with b1:
         if st.button("Alpha", use_container_width=True):
@@ -463,7 +455,7 @@ with herramientas:
         st.rerun()
 
     # Resultado del hallado
-    st.metric(label=t["lbl_res"], value=st.session_state.resultado_opt)
+    st.metric(label=st.session_state.variable_optimizada, value=st.session_state.resultado_opt:.5f)
 
 
 # Calculamos los valores del call
