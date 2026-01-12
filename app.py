@@ -461,7 +461,7 @@ with herramientas:
 
     # Resultado del hallado
     valor_hallado = f"{st.session_state.resultado_opt:.5f}" if st.session_state.resultado_opt else ""
-    st.metric(label=f"{t["lbl_res"]} {var_activa.upper()}", value=st.session_state.resultado_opt:.4f)
+    st.metric(label=f"{t["lbl_res"]} {var_activa.upper()}", value=st.session_state.resultado_opt)
 
 
 # Calculamos los valores del call
