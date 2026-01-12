@@ -394,7 +394,7 @@ with herramientas:
                 color: #fafafa; 
                 font-size: 0.8rem; 
                 margin-bottom: 4px;">
-                {t["paso_temp"]}
+                {t["paso_temp"]}{st.session_state.paso_val:.6f}
             </div>
             <div style="
                 color: #fafafa; 
