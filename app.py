@@ -510,7 +510,9 @@ with grafico:
     if any(p > 0 for p in st.session_state.precios_mercado):
         ax.plot(strikes, st.session_state.precios_mercado, marker='o', color='#000000', linewidth=2)
         ax.fill_between(strikes, st.session_state.precios_mercado, alpha=0.1, color='#000000', label=t['precio_mercado'])
-        
+
+    ax.set_xticks(rango_strikes) # Fuerza a que aparezcan exactamente esos números
+    ax.set_xticklabels([f"{s:.1f}" for s in rango_strikes]) # Formatea a un decimal
     ax.set_xlabel("Strike")
     ax.set_ylabel(t["graph_y"])
     ax.grid(True, linestyle='--', alpha=0.6)
