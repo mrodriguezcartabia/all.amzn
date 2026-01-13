@@ -502,7 +502,7 @@ with herramientas:
                 align-items: center;
                 font-size: 1rem;
                 font-family: 'Inter', sans-serif;">
-                {st.session_state.paso_val:.6f}
+                {variable}={valor}
             </div>
         </div>
     """, unsafe_allow_html=True)
