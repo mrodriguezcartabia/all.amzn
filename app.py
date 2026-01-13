@@ -555,7 +555,7 @@ with grafico:
         hovermode='x unified',
         template='plotly_white', # Esto pone el fondo blanco y letras negras
         paper_bgcolor='rgba(0,0,0,0)', # Fondo exterior transparente para adaptarse a Streamlit
-        plot_bgcolor='#f0f2f6',          # Fondo interior
+        plot_bgcolor='#e2e8f0',          # Fondo interior
         margin=dict(l=20, r=20, t=20, b=20),
         height=400,
         legend=dict(
