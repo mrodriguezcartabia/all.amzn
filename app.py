@@ -307,7 +307,7 @@ def optimizar_parametro(target_param, precios_mercado, strikes, S, r, T, sigma, 
         p = {
             "sigma": valor_test if target_param == "Sigma" else sigma,
             "beta": valor_test if target_param == "Beta" else beta,
-            "alpha": valor_test if target_param == "Alpha" else param_a,
+            "alpha": valor_test if target_param == t["alpha_lbl"] else param_a,
             "tasa": valor_test if target_param == t["tasa_lbl"] else r
         }
         
@@ -320,7 +320,7 @@ def optimizar_parametro(target_param, precios_mercado, strikes, S, r, T, sigma, 
     bounds = {
         "Sigma": (0.01, 3.0),
         "Beta": (0.01, 10.0),
-        "Alpha": (0.1, 5.0),
+        t["alpha_lbl"]: (0.1, 5.0),
         t["tasa_lbl"]: (0.0, 2.0)
     }
     
@@ -461,9 +461,9 @@ with herramientas:
     # Ahora optimizamos
     b1, b2, b3, b4 = st.columns(4)
     with b1:
-        if st.button("Alpha", use_container_width=True):
-            if st.session_state.variable_optimizada != "Alpha":
-                st.session_state.variable_optimizada = "Alpha"
+        if st.button(t["alpha_lbl"], use_container_width=True):
+            if st.session_state.variable_optimizada != t["alpha_lbl"]:
+                st.session_state.variable_optimizada = t["alpha_lbl"]
                 st.session_state.resultado_opt = None
     with b2:
         if st.button("Beta", use_container_width=True):
