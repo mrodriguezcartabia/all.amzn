@@ -491,19 +491,20 @@ with herramientas:
     variable = st.session_state.variable_optimizada if st.session_state.variable_optimizada else ""
     valor = f"{st.session_state.resultado_opt:.5f}" if st.session_state.resultado_opt else ""
     st.markdown(f"""
-        <div style="margin-bottom: 16px;">         
+        <div style="margin-bottom: 16px;">   
             <div style="
                 height: 42px;
-                background-color: #1e293b; 
-                color: #fafafa; 
-                padding: 0px 12px; 
-                border: 1px solid rgba(255, 255, 255, 0.2); 
+                background-color: #1e293b;
+                color: #fafafa;
+                padding: 0px 12px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 0.5rem;
                 display: flex;
                 align-items: center;
                 font-size: 1rem;
                 font-family: 'Inter', sans-serif;">
-                {variable}={valor}</div>
+                {variable}={valor}
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
