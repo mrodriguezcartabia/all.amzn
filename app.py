@@ -504,7 +504,7 @@ with herramientas:
     align-items: center;
     font-size: 1rem;
     font-family: 'Inter', sans-serif;">
-    {variable}={valor}
+    bla
     </div>
     </div>
     """, unsafe_allow_html=True)
