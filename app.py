@@ -36,7 +36,7 @@ texts = {
         "msg_loading_2": "Running Least squares",
         "msg_success": "Calculation complete!",
         "graph_title": "Call Price (C) vs Strike (K)",
-        "graph_y": "Call Price",
+        "graph_y": "Price",
         "info_init": "Click RECALCULATE to generate the visualization.",
         "lbl_ingresar": "Enter market data",
         "lbl_guardar": "Save",
@@ -74,7 +74,7 @@ texts = {
         "msg_loading_2": "Ejecutando mínimos cuadrados",
         "msg_success": "¡Cálculo finalizado!",
         "graph_title": "Gráfico de Precio de Call (C) vs Strike (K)",
-        "graph_y": "Precio de la opción",
+        "graph_y": "Precio",
         "info_init": "Presiona RECALCULAR para generar la visualización.",
         "lbl_ingresar": "Ingresar datos de mercado",
         "lbl_guardar": "Guardar",
@@ -111,7 +111,7 @@ texts = {
         "msg_loading_2": "Executando método dos mínimos quadrados",
         "msg_success": "Cálculo concluído!",
         "graph_title": "Gráfico de Preço da Call (C) vs Strike (K)",
-        "graph_y": "Preço da opção",
+        "graph_y": "Preço",
         "info_init": "Clique em RECALCULAR para gerar a visualização.",
         "lbl_ingresar": "Insira os dados de mercado",
         "lbl_guardar": "Salvar",
@@ -555,7 +555,7 @@ with grafico:
         hovermode='x unified',
         template='plotly_white', # Esto pone el fondo blanco y letras negras
         paper_bgcolor='rgba(0,0,0,0)', # Fondo exterior transparente para adaptarse a Streamlit
-        plot_bgcolor='rgba(0,0,0,0)',          # Fondo interior
+        plot_bgcolor='#f0f2f6',          # Fondo interior
         margin=dict(l=20, r=20, t=20, b=20),
         height=400,
         legend=dict(
