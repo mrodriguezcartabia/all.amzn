@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import os
 import time
 import json
-import textwrap
 from datetime import datetime
 from scipy.special import comb
 from scipy.optimize import minimize_scalar
@@ -400,9 +399,9 @@ with herramientas:
             </div>
             <div style="
                 height: 42px;
-                background-color: #1e293b; 
-                color: #fafafa; 
-                padding: 0px 12px; 
+                background-color: #1e293b;;
+                color: #fafafa;
+                padding: 0px 12px;
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 0.5rem;
                 display: flex;
@@ -490,7 +489,7 @@ with herramientas:
     
 
     # Resultado del hallado
-    variable = st.session_state.variable_optimizada if st.session_state.variable_optimizada else ""
+    variable = st.session_state.variable_optimizada if st.session_state.variable_optimizada else "x"
     valor = f"{st.session_state.resultado_opt:.5f}" if st.session_state.resultado_opt else ""
     st.markdown(f"""
         <div style="margin-bottom: 16px;">   
