@@ -558,7 +558,6 @@ with grafico:
         plot_bgcolor='rgba(0,0,0,0)',          # Fondo interior
         margin=dict(l=20, r=20, t=20, b=20),
         height=400,
-        font=dict(color="#cbd5e0"),
         legend=dict(
             orientation="h", 
             yanchor="bottom", 
