@@ -3,10 +3,10 @@ import requests
 import pandas as pd
 import pandas_market_calendars as mcal
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 import time
 import json
+import plotly.graph_objects as go
 from datetime import datetime
 from scipy.special import comb
 from scipy.optimize import minimize_scalar
@@ -524,32 +524,46 @@ if st.session_state.data_grafico is None or btn_recalcular:
     if btn_recalcular:
         st.toast(t["msg_success"])
 
-# Graficamos
+# Gráfico
 with grafico:
     strikes, calls = st.session_state.data_grafico
 
-    #st.subheader("Gráfico de Precio de Call (C) vs Strike (K)")
-    fig, ax = plt.subplots(figsize=(8, 3.5))
-    fig.patch.set_facecolor('#e2e8f0') 
-    ax.set_facecolor('#e2e8f0')
-    
-    # Curva del Modelo
-    ax.plot(strikes, calls, marker='o', color='#FF9900', linewidth=2)
-    ax.fill_between(strikes, calls, alpha=0.08, color='#FF9900', label='Call')
-
-    # Curva de Mercado   - Solo si el usuario ingresó algún valor > 0
+    # Creamos el gráfico
+    fig = go.Figure()
+    # Curva del modelo
+    fig.add_trace(go.Scatter(
+        x=strikes,
+        y=calls,
+        mode='lines+markers',
+        line=dict(color='#FF9900', width=3),
+        marker=dict(size=8),
+        hovertemplate='Strike: %{x:.2f}<br>t["graph_y"]: %{y:.2f}<extra></extra>'
+    ))
+    # Curva de valores de mercado
     if any(p > 0 for p in st.session_state.precios_mercado):
-        ax.plot(strikes, st.session_state.precios_mercado, marker='o', color='#000000', linewidth=2)
-        ax.fill_between(strikes, st.session_state.precios_mercado, alpha=0.1, color='#000000', label=t['precio_mercado'])
+        fig.add_trace(go.Scatter(
+            x=strikes,
+            y=st.session_state.precios_mercado,
+            mode='lines+markers',
+            name=t['precio_mercado'],
+            line=dict(color='#000000', width=3),
+            marker=dict(size=8),
+            hovertemplate='Strike: %{x:.2f}<br>{t["graph_y"]}: %{y:.2f}<extra></extra>'
+        ))
+    # Estética
+    fig.update_layout(
+        hovermode='x unified', # Muestra ambos valores al poner el cursor en el eje X
+        template='plotly_white',
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=400,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        xaxis=dict(
+            tickmode='array',
+            tickvals=rango_strikes,
+            title="Strike"
+        ),
+        yaxis=dict(title=t["graph_y"])
+    )
 
-    ax.set_xticks(rango_strikes) # Fuerza a que aparezcan exactamente esos números
-    ax.set_xticklabels([f"{s:.1f}" for s in rango_strikes]) # Formatea a un decimal
-    ax.set_xlabel("Strike")
-    ax.set_ylabel(t["graph_y"])
-    ax.grid(True, linestyle='--', alpha=0.6)
-    st.pyplot(fig)
-
-    
-    # Eliminar bordes innecesarios
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+    # Mostrar en Streamlit
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
