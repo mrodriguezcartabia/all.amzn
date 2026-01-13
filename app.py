@@ -32,14 +32,15 @@ texts = {
         "paso_temp": "Time Step",
         "reset": "Reset",
         "recalc": "RECALCULATE",
-        "msg_loading": "Running binomial model...",
+        "msg_loading": "Running Binomial model",
+        "msg_loading_2": "Running Least squares",
         "msg_success": "Calculation complete!",
         "graph_title": "Call Price (C) vs Strike (K)",
         "graph_y": "Call Price",
         "info_init": "Click RECALCULATE to generate the visualization.",
         "lbl_ingresar": "Enter market data",
         "lbl_guardar": "Save",
-        "lbl_hallar": "Find variable",
+        "lbl_hallar": "FIND VARIABLE",
         "lbl_res": "Sigma found",
         "lbl_mkt_info": "Enter market prices for each Strike:",
         "precio_mercado": "Price market",
@@ -69,14 +70,15 @@ texts = {
         "paso_temp": "Paso Temporal",
         "reset": "Reestablecer",
         "recalc": "RECALCULAR",
-        "msg_loading": "Ejecutando modelo binomial...",
+        "msg_loading": "Ejecutando el modelo binomial",
+        "msg_loading_2": "Ejecutando mínimos cuadrados",
         "msg_success": "¡Cálculo finalizado!",
         "graph_title": "Gráfico de Precio de Call (C) vs Strike (K)",
         "graph_y": "Precio de la opción",
         "info_init": "Presiona RECALCULAR para generar la visualización.",
         "lbl_ingresar": "Ingresar datos de mercado",
         "lbl_guardar": "Guardar",
-        "lbl_hallar": "Hallar variable",
+        "lbl_hallar": "HALLAR VARIABLE",
         "lbl_res": "Sigma hallado",
         "lbl_mkt_info": "Introduce los precios de mercado para cada Strike:",
         "precio_mercado": "Valor de mercado",
@@ -105,14 +107,15 @@ texts = {
         "paso_temp": "Passo Temporal",
         "reset": "Restablecer",
         "recalc": "RECALCULAR",
-        "msg_loading": "Executando modelo binomial...",
+        "msg_loading": "Executando modelo binomial",
+        "msg_loading_2": "Executando método dos mínimos quadrados",
         "msg_success": "Cálculo concluído!",
         "graph_title": "Gráfico de Preço da Call (C) vs Strike (K)",
         "graph_y": "Preço da opção",
         "info_init": "Clique em RECALCULAR para gerar a visualização.",
         "lbl_ingresar": "Insira os dados de mercado",
         "lbl_guardar": "Salvar",
-        "lbl_hallar": "Encontre variável",
+        "lbl_hallar": "ENCONTRE VARIÁVEL",
         "lbl_res": "Sigma encontrado",
         "lbl_mkt_info": "Insira os preços de mercado para cada Strike:",
         "precio_mercado": "Mercado de preços",
@@ -477,10 +480,15 @@ with herramientas:
                 st.session_state.variable_optimizada = t["tasa_lbl"]
                 st.session_state.resultado_opt = None
     # Botón para optimizar
-    if st.button(t["lbl_hallar"], type="primary", use_container_width=True) and any(p > 0 for p in st.session_state.precios_mercado) and st.session_state.variable_optimizada:
-        st.session_state.resultado_opt = optimizar_parametro(st.session_state.variable_optimizada, st.session_state.precios_mercado, rango_strikes, precio_accion, tasa_r, 
+    btn_hallar = st.button(t["lbl_hallar"], type="primary", use_container_width=True)
+    if btn_hallar and any(p > 0 for p in st.session_state.precios_mercado) and st.session_state.variable_optimizada:
+        with st.spinner(t['msg_loading_2']):
+            st.session_state.resultado_opt = optimizar_parametro(st.session_state.variable_optimizada, st.session_state.precios_mercado, rango_strikes, precio_accion, tasa_r, 
                                                              tiempo_T, sigma, beta, st.session_state.paso_val, param_a)
-        st.rerun()
+        # Otro mensaje temporal de éxito
+        if btn_hallar:
+            st.toast(t["msg_success"])
+    st.rerun()
 
     # Resultado del hallado
     variable = st.session_state.variable_optimizada if st.session_state.variable_optimizada else ""
