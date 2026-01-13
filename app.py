@@ -537,7 +537,7 @@ with grafico:
         mode='lines+markers',
         line=dict(color='#FF9900', width=3),
         marker=dict(size=8),
-        hovertemplate='Strike: %{x:.2f}<br>{t["graph_y"]}: %{y:.2f}<extra></extra>'
+        hovertemplate=f'Strike: %{{x:.2f}}<br>{t["graph_y"]}: %{{y:.2f}}<extra></extra>'
     ))
     # Curva de valores de mercado
     if any(p > 0 for p in st.session_state.precios_mercado):
@@ -548,14 +548,14 @@ with grafico:
             name=t['precio_mercado'],
             line=dict(color='#000000', width=3),
             marker=dict(size=8),
-            hovertemplate='Strike: %{x:.2f}<br>{t["graph_y"]}: %{y:.2f}<extra></extra>'
+            hovertemplate=f'Strike: %{{x:.2f}}<br>{t["graph_y"]}: %{{y:.2f}}<extra></extra>'
         ))
     # Estética
     fig.update_layout(
         hovermode='x unified',
         template='plotly_white', # Esto pone el fondo blanco y letras negras
         paper_bgcolor='rgba(0,0,0,0)', # Fondo exterior transparente para adaptarse a Streamlit
-        plot_bgcolor='white',          # Fondo interior blanco puro
+        plot_bgcolor='rgba(0,0,0,0)',          # Fondo interior
         margin=dict(l=20, r=20, t=20, b=20),
         height=400,
         legend=dict(
