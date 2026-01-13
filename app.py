@@ -491,7 +491,7 @@ with herramientas:
     
 
     # Resultado del hallado
-    variable = st.session_state.variable_optimizada if st.session_state.variable_optimizada else ""
+    variable = f"{st.session_state.variable_optimizada}=" if st.session_state.variable_optimizada else ""
     valor = f"{st.session_state.resultado_opt:.5f}" if st.session_state.resultado_opt else ""
     st.markdown(f"""
         <div style="margin-bottom: 16px;">         
@@ -506,7 +506,7 @@ with herramientas:
                 align-items: center;
                 font-size: 1rem;
                 font-family: 'Inter', sans-serif;">
-                {variable} = {valor} 
+                {variable} {valor} 
             </div>
         </div>
     """, unsafe_allow_html=True)
