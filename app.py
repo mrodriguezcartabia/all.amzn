@@ -558,13 +558,12 @@ with grafico:
         plot_bgcolor='#e2e8f0',          # Fondo interior
         margin=dict(l=20, r=20, t=20, b=20),
         height=400,
-        legend=dict(
-            orientation="h", 
-            yanchor="bottom", 
-            y=1.02, 
-            xanchor="right", 
-            x=1,
-            bgcolor='rgba(255,255,255,0.5)'
+        hoverlabel=dict(
+            bgcolor="#475569",       # Gris azulado más claro (Slate 600)
+            font_size=13,
+            font_color="white",
+            bordercolor="#f8fafc",   # Borde casi blanco para crear separación física
+            font_family="Inter"
         ),
         xaxis=dict(
             tickmode='array',
