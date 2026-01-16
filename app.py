@@ -382,7 +382,7 @@ st.divider()
 tiempo_T = dias / 365
 # Introducimos los Strikes
 strike = round(precio_accion / 2.5) * 2.5
-rango_strikes = np.arange(strike - 7.5, strike + 8, 2.5)
+rango_strikes = np.arange(strike - 7.5, strike + 6, 2.5)
 if 'precios_mercado' not in st.session_state:
   st.session_state.precios_mercado = [0.0] * len(rango_strikes)
 
