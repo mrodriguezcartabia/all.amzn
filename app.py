@@ -328,12 +328,12 @@ def optimizar_parametro(target_param, precios_mercado, strikes, S, r, T, sigma, 
     return res.x
 
 # --- ESTADO DE SESIÓN ---
-valor_paso_original = 0.1
+valor_paso_original = 1.0
 # Creamos una variable que sirve en caso de que falle la comunicación con Alpha v o FRED
 if 'valor_temporal' not in st.session_state:
     st.session_state.valor_temporal = None
 if 'tiempo_total' not in st.session_state:
-  st.session_state.tiempo_total = 1
+  st.session_state.tiempo_total = 1.0
 if 'precio_AMZN' not in st.session_state:
   st.session_state.precio_AMZN = get_market_data_alpha()
 if 'paso_val' not in st.session_state:
