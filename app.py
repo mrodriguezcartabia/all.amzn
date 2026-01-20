@@ -17,7 +17,7 @@ idioma = params.get("lang", "en") # Por defecto inglés
 
 texts = {
     "en": {
-        "title": "Gold Call Valuator",
+        "title": "Amazon Call Valuator",
         "beta_lbl": "Beta",
         "beta_cap": "ℹ️ This value corresponds to the Black-Scholes model",
         "sigma_lbl": "Sigma (Volatility)",
@@ -55,7 +55,7 @@ texts = {
         "seleccionar": "Select",
     },
     "es": {
-        "title": "Valuador de Call de Oro",
+        "title": "Valuador de Call de Amazon",
         "beta_lbl": "Beta",
         "beta_cap": "ℹ️ Este valor corresponde al modelo de Black-Scholes",
         "sigma_lbl": "Sigma (Volatilidad)",
@@ -92,7 +92,7 @@ texts = {
         "seleccionar": "Selecccionar",
     },
     "pt": {
-        "title": "Valiador de Call de Ouro",
+        "title": "Valiador de Call de Amazon",
         "beta_lbl": "Beta",
         "beta_cap": "ℹ️ Este valor corresponde ao modelo Black-Scholes",
         "sigma_lbl": "Sigma (Volatilidade)",
@@ -165,11 +165,11 @@ def get_market_data_alpha():
         response = requests.get(f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AMZN&apikey={api_key}", headers=headers, timeout=10)
         data = response.json()
         if "Global Quote" in data and "05. price" in data["Global Quote"]:
-            precio_amzn = float(data["Global Quote"]["05. price"])
+            precio = float(data["Global Quote"]["05. price"])
             
             with open(cache_file, "w") as f:
-                f.write(str(precio_amzn))
-            return precio_amzn
+                f.write(str(precio))
+            return precio
     except:
         pass
     if st.session_state.valor_temporal is None:
@@ -201,7 +201,10 @@ def get_fred_risk_free_rate():
         for obs in data['observations']:
             val =obs['value']
             if val != ".":
-                return float(val) / 100
+                tasa = float(val) / 100
+                with open(cache_file, "w") as f:
+                    f.write(str(tasa))
+                return tasa
     except:
         pass
     if st.session_state.valor_temporal is None:
@@ -265,7 +268,7 @@ def parar_juego(cartel):
     with center_col:
         st.markdown(f"""
             <div class="overlay-card-static">
-                <h2 style="color: #DAA520; text-align: center;">{t['title']}</h2>
+                <h2 style="color: #FF9900; text-align: center;">{t['title']}</h2>
                 <p style="color: white; text-align: center;">{cartel}</p>
             </div>
         """, unsafe_allow_html=True)
