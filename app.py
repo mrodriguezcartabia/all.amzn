@@ -586,3 +586,34 @@ with grafico:
 
     # Mostrar en Streamlit
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
+##########################
+
+st.sidebar.header("Inspector de Archivos locales")
+
+cache_file = "spot_price.txt"
+
+if os.path.exists(cache_file):
+    # 1. Obtener la "edad" del archivo
+    mtime = os.path.getmtime(cache_file) # Timestamp de modificación
+    fecha_mod = datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M:%S')
+    
+    segundos_vida = time.time() - mtime
+    minutos_vida = int(segundos_vida // 60)
+    
+    # 2. Leer el contenido
+    with open(cache_file, "r") as f:
+        contenido = f.read()
+
+    # Mostrar en la UI de Streamlit
+    st.sidebar.write(f"**Archivo:** `{cache_file}`")
+    st.sidebar.write(f"**Contenido (Precio):** ${contenido}")
+    st.sidebar.write(f"**Última actualización:** {fecha_mod}")
+    st.sidebar.info(f"Hace {minutos_vida} minutos")
+    
+    # Botón opcional para borrarlo y forzar actualización
+    if st.sidebar.button("Forzar actualización (Borrar archivo)"):
+        os.remove(cache_file)
+        st.rerun()
+else:
+    st.sidebar.warning("El archivo `spot_price.txt` aún no ha sido creado.")
